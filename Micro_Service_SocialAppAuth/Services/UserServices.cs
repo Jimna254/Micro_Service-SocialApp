@@ -85,7 +85,7 @@ namespace SocialAppAuthentication.Services
                     //if success return Return a string
 
                     //var get User 
-                    return "Was Registered Successfully ";
+                    return " ";
                 }
 
                 else

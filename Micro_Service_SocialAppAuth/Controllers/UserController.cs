@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SocialApp_MessageBus;
 using SocialAppAuthentication.Models;
 using SocialAppAuthentication.Services.IServices;
 
@@ -11,15 +12,19 @@ namespace SocialAppAuthentication.Controllers
     public class UserController : ControllerBase
     {
         private IUserServices _iuserService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
         private readonly ResponseDTO _response;
 
-        public UserController(IUserServices userServices)
+        public UserController(IUserServices userServices, IConfiguration configuration , IMessageBus messageBus)
         {
             _iuserService = userServices;
+            _configuration = configuration;
+            _messageBus = messageBus;
             // don't inject the DTO
 
             _response = new ResponseDTO();
-
+           // this.configuration = configuration;
         }
         [HttpPost("register")]
         public async Task<ActionResult<ResponseDTO>> AddUSer(RegisterRequestDTO registerRequestDto)
@@ -34,10 +39,20 @@ namespace SocialAppAuthentication.Controllers
                 return BadRequest(_response);
             }
 
-            return Ok(_response);
+            //Send a message to the Service Bus
+            var queueName = _configuration.GetSection("QueuesandTopics:RegisterUser").Get<string>();
 
+            var message = new UserMessage()
+            {
+                Email = registerRequestDto.Email,
+                Name = registerRequestDto.Name,
+            };
+            await _messageBus.PublishMessage(message, queueName);
+            return Ok(_response);
+        
 
         }
+
         [HttpPost("Login")]
         public async Task<ActionResult<ResponseDTO>> LoginUser(LoginRequestDTO loginRequestDto)
         {

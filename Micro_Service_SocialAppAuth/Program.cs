@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SocialApp_MessageBus;
 using SocialAppAuthentication.Data;
 using SocialAppAuthentication.Extensions;
 using SocialAppAuthentication.Services;
@@ -27,16 +29,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
+//configure JWtOptions 
+builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JwtOptions"));
+
 // Register Services
-builder.Services.AddScoped<IUserServices, UserServices>();
 
 builder.Services.AddScoped<IJWtTokenGenerator, JWTServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 //Register Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-//configure JWtOptions 
-builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JwtOptions"));
+
 
 var app = builder.Build();
 
