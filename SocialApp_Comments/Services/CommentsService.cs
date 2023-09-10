@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialApp_Comments.Data.SocialApp_Posts.Data;
+using SocialApp_Comments.Data;
 using SocialApp_Comments.Models;
 using SocialApp_Comments.Services.IServices;
 
@@ -43,6 +43,12 @@ namespace SocialApp_Comments.Services
         {
             return await _context.Comments.Where(x => x.PostId == postId).ToListAsync();
         }
+
+        public async Task<Comment> GetCommentsByUserIdAsync(string userId)
+        {
+            return await _context.Comments.Where(c => c.UserId == userId).FirstOrDefaultAsync();
+        }
+
         public async Task<string> UpdateCommentAsync(Comment comment)
         {
             _context.Comments.Update(comment);

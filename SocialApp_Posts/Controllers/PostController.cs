@@ -6,6 +6,8 @@ using SocialApp_Posts.Models;
 using SocialApp_Posts.Models.DTOs;
 using SocialApp_Posts.Services.IServices;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SocialApp_Posts.Controllers
 {
@@ -28,9 +30,19 @@ namespace SocialApp_Posts.Controllers
         //Endpoint to create Post
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ResponseDTO>> CreatePost(PostRequestDTO postRequestDto)
         {
             var newPost = _mapper.Map<Post>(postRequestDto);
+            string jwtToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            // Decode the JWT token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(jwtToken);
+
+            // Retrieve the user's ID from the claims
+            string userId = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            newPost.UserId = userId;
             var response = await _postService.CreatePostAsync(newPost);
             if (response != null)
             {
@@ -63,6 +75,7 @@ namespace SocialApp_Posts.Controllers
 
         // Endpoint to Get post by ID
         [HttpGet("{id}")]
+        
         public async Task<ActionResult<ResponseDTO>> GetPostById(Guid id)
         {
             var post = await _postService.GetPostByIdAsync(id);
@@ -77,13 +90,16 @@ namespace SocialApp_Posts.Controllers
             _response.Message = "An Error Occured";
             return BadRequest(_response);
         }
+
         //Deletion
 
+
         [HttpDelete("{id}")]
-       
+        [Authorize]
         public async Task<ActionResult<ResponseDTO>> DeletePost(Guid id)
         {
             var post = await _postService.GetPostByIdAsync(id);
+
             if (post != null)
             {
                 var response = await _postService.DeletePostAsync(post);
@@ -105,7 +121,7 @@ namespace SocialApp_Posts.Controllers
         //Fetching Posts by User ID
 
         [HttpGet("userId")]
-        public async Task<ActionResult<ResponseDTO>> GetAllPostsByUserId(Guid userId)
+        public async Task<ActionResult<ResponseDTO>> GetAllPostsByUserId(string userId)
         {
             var posts = await _postService.GetPostsByUserIdAsync(userId);
             if (posts != null)
@@ -120,7 +136,8 @@ namespace SocialApp_Posts.Controllers
             return BadRequest(_response);
         }
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
+        
         public async Task<ActionResult<ResponseDTO>> UpdatePost(Guid id, PostRequestDTO postRequestDto)
         {
             var post = await _postService.GetPostByIdAsync(id);

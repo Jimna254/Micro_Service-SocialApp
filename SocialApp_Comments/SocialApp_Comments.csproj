@@ -13,7 +13,6 @@
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.16.1" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="MailKit" Version="4.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />

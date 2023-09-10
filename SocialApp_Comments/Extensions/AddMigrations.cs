@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialApp_Comments.Data.SocialApp_Posts.Data;
+using SocialApp_Comments.Data;
 
 namespace SocialApp_Comments.Extensions
 {

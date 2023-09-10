@@ -4,6 +4,6 @@ namespace SocialApp_Posts.Services.IServices
 {
     public interface ICommentService
     {
-        Task<IEnumerable<CommentDTO>> GetCommentsAsync();
+        Task<IEnumerable<CommentDTO>> GetCommentsAsync(string PostID);
     }
 }

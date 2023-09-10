@@ -9,7 +9,7 @@ namespace SocialApp_Posts.Services.IServices
         //Get post by id
         Task<Post> GetPostByIdAsync(Guid postId);
         //Get posts by user id
-        Task<IEnumerable<Post>> GetPostsByUserIdAsync(Guid userId);
+        Task<IEnumerable<Post>> GetPostsByUserIdAsync(string userId);
         //Post Creation
         Task<string> CreatePostAsync(Post post);
         //Updation

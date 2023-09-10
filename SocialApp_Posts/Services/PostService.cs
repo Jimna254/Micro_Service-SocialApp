@@ -40,7 +40,7 @@ namespace SocialApp_Posts.Services
             return await _context.Posts.Where(x => x.PostId == postId).FirstOrDefaultAsync();
         }
         // Get Post by UserID
-        public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<Post>> GetPostsByUserIdAsync(string userId)
         {
             var result = await _context.Posts.Where(x => x.UserId == userId).ToListAsync();
             return result;

@@ -141,6 +141,22 @@ namespace SocialApp_Comments.Controllers
             _response.Message = "Something went wrong";
             return BadRequest(_response);
         }
+
+        [HttpGet("GetCommentBy/{id}")]
+        public async Task<ActionResult<ResponseDTO>> GetAllCommentsByUserId(string userId)
+        {
+            var comments = await _commentInterface.GetCommentsByUserIdAsync(userId);
+            if (comments != null)
+            {
+                _response.Message = "";
+                _response.IsSuccess = true;
+                _response.Data = comments;
+                return Ok(_response);
+            }
+            _response.IsSuccess = false;
+            _response.Message = "Something went wrong";
+            return BadRequest(_response);
+        }
     }
 
     

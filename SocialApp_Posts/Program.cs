@@ -3,6 +3,7 @@ using SocialApp_Posts.Data;
 using SocialApp_Posts.Extensions;
 using SocialApp_Posts.Services;
 using SocialApp_Posts.Services.IServices;
+using SocialApp_Posts.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +23,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 var dbContextBuilder = new DbContextOptionsBuilder<AppDbContext>();
 dbContextBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
+//Add Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 //Register Services
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+
+
+//custom builders
+builder.AddSwaggenGenExtension();
+builder.AddAppAuthentication();
+
+// config user api
+builder.Services.AddHttpClient("Comment", c => c.BaseAddress = new Uri(builder.Configuration["ServiceUrl:CommentApi"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 
 
 var app = builder.Build();
@@ -35,7 +47,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// add all pending migrations to the  db
 app.UseMigration();
+
+// add swagger & Auth
+ app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
