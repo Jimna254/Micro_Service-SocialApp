@@ -20,8 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-var dbContextBuilder = new DbContextOptionsBuilder<AppDbContext>();
-dbContextBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
 
 //Add Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
